@@ -458,13 +458,13 @@ class JViewLegacy extends JObject
 		{
 			$classname = get_class($this);
 			$viewpos = strpos($classname, 'View');
-			
+
 			if ($viewpos === false)
 			{
 				throw new Exception(JText::_('JLIB_APPLICATION_ERROR_VIEW_GET_NAME'), 500);
 			}
-			
-			$this->_name = strtolower(substr($classname, $viewpos+4));
+
+			$this->_name = strtolower(substr($classname, $viewpos + 4));
 		}
 
 		return $this->_name;
