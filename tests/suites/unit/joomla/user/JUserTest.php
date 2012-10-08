@@ -352,7 +352,7 @@ class JUserTest extends TestCaseDatabase
 	}
 
 	/**
-	 * Test...
+	 * Test the setParameters method.
 	 *
 	 * @covers JUser::setParameters
 	 * @todo Implement testSetParameters().
