@@ -64,31 +64,6 @@ abstract class JString
 	);
 
 	/**
-	 * Split a string in camel case format
-	 *
-	 * "FooBarABCDef"            becomes  array("Foo", "Bar", "ABC", "Def");
-	 * "JFooBar"                 becomes  array("J", "Foo", "Bar");
-	 * "J001FooBar002"           becomes  array("J001", "Foo", "Bar002");
-	 * "abcDef"                  becomes  array("abc", "Def");
-	 * "abc_defGhi_Jkl"          becomes  array("abc_def", "Ghi_Jkl");
-	 * "ThisIsA_NASAAstronaut"   becomes  array("This", "Is", "A_NASA", "Astronaut")),
-	 * "JohnFitzgerald_Kennedy"  becomes  array("John", "Fitzgerald_Kennedy")),
-	 *
-	 * @param   string  $string  The source string.
-	 *
-	 * @return  array   The splitted string.
-	 *
-	 * @deprecated  12.3 Use JStringNormalise::fromCamelCase()
-	 * @since   11.3
-	 */
-	public static function splitCamelCase($string)
-	{
-		JLog::add('JString::splitCamelCase has been deprecated. Use JStringNormalise::fromCamelCase.', JLog::WARNING, 'deprecated');
-
-		return JStringNormalise::fromCamelCase($string, true);
-	}
-
-	/**
 	 * Increments a trailing number in a string.
 	 *
 	 * Used to easily create distinct labels when copying objects. The method has the following styles:
@@ -710,23 +685,6 @@ abstract class JString
 	}
 
 	/**
-	 * Catch an error and throw an exception.
-	 *
-	 * @param   integer  $number   Error level
-	 * @param   string   $message  Error message
-	 *
-	 * @return  void
-	 *
-	 * @link    https://bugs.php.net/bug.php?id=48147
-	 *
-	 * @throw   ErrorException
-	 */
-	private static function _iconvErrorHandler($number, $message)
-	{
-		throw new ErrorException($message, 0, $number);
-	}
-
-	/**
 	 * Transcode a string.
 	 *
 	 * @param   string  $source         The string to transcode.
@@ -743,26 +701,14 @@ abstract class JString
 	{
 		if (is_string($source))
 		{
-			set_error_handler(array(__CLASS__, '_iconvErrorHandler'), E_NOTICE);
-			try
+			switch (ICONV_IMPL)
 			{
-				/*
-				 * "//TRANSLIT//IGNORE" is appended to the $to_encoding to ensure that when iconv comes
-				 * across a character that cannot be represented in the target charset, it can
-				 * be approximated through one or several similarly looking characters or ignored.
-				 */
-				$iconv = iconv($from_encoding, $to_encoding . '//TRANSLIT//IGNORE', $source);
+				case 'glibc':
+				return @iconv($from_encoding, $to_encoding . '//TRANSLIT,IGNORE', $source);
+				case 'libiconv':
+				default:
+				return iconv($from_encoding, $to_encoding . '//IGNORE//TRANSLIT', $source);
 			}
-			catch (ErrorException $e)
-			{
-				/*
-				 * "//IGNORE" is appended to the $to_encoding to ensure that when iconv comes
-				 * across a character that cannot be represented in the target charset, it is ignored.
-				 */
-				$iconv = iconv($from_encoding, $to_encoding . '//IGNORE', $source);
-			}
-			restore_error_handler();
-			return $iconv;
 		}
 
 		return null;
