@@ -49,8 +49,6 @@ class JDatabaseMysqlTest extends TestCaseDatabaseMysql
 	 * @return  void
 	 *
 	 * @since   11.4
-	 *
-	 * @return void
 	 */
 	public function testConnected()
 	{

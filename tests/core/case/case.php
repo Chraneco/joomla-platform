@@ -426,7 +426,7 @@ abstract class TestCase extends PHPUnit_Framework_TestCase
 	 *
 	 * @param   string  $testName  The name of the test class for which to set the error callback method.
 	 *
-	 * @return	void
+	 * @param   string  $testName  The test name.
 	 *
 	 * @return    void
 	 *
